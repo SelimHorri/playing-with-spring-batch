@@ -41,6 +41,7 @@ public class BatchConfig {
 			.build();
 	}
 	
+	@Bean
 	public FlatFileItemReader<Employee> getFileItemReader(@Value("${input_file}") Resource resource) {
 		
 		FlatFileItemReader<Employee> flatFileItemReader = new FlatFileItemReader<>();
