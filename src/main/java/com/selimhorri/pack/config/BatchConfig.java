@@ -8,8 +8,15 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.LineMapper;
+import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
+import org.springframework.batch.item.file.mapping.DefaultLineMapper;
+import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
 
 import com.selimhorri.pack.model.entity.Employee;
 
@@ -32,6 +39,32 @@ public class BatchConfig {
 			.incrementer(new RunIdIncrementer())
 			.start(step)
 			.build();
+	}
+	
+	public FlatFileItemReader<Employee> getFileItemReader(@Value("${input_file}") Resource resource) {
+		
+		FlatFileItemReader<Employee> flatFileItemReader = new FlatFileItemReader<>();
+		flatFileItemReader.setResource(resource);
+		flatFileItemReader.setName("CSV Reader");
+		flatFileItemReader.setLinesToSkip(1);
+		flatFileItemReader.setLineMapper(this.getLineMapper());
+		return flatFileItemReader;
+	}
+	
+	private LineMapper<Employee> getLineMapper() {
+		
+		DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer();
+		delimitedLineTokenizer.setDelimiter(",");
+		delimitedLineTokenizer.setStrict(false);
+		delimitedLineTokenizer.setNames(new String[] {"fname", "lname", "email", "image_url", "hiredate"});
+		
+		BeanWrapperFieldSetMapper<Employee> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
+		beanWrapperFieldSetMapper.setTargetType(Employee.class);
+		
+		DefaultLineMapper<Employee> defaultLineMapper = new DefaultLineMapper<>();
+		defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
+		
+		return defaultLineMapper;
 	}
 	
 	
