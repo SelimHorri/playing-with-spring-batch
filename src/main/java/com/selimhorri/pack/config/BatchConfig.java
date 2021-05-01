@@ -2,6 +2,7 @@ package com.selimhorri.pack.config;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -21,6 +22,7 @@ import org.springframework.core.io.Resource;
 import com.selimhorri.pack.model.entity.Employee;
 
 @Configuration
+@EnableBatchProcessing
 public class BatchConfig {
 	
 	@Bean
@@ -42,7 +44,7 @@ public class BatchConfig {
 	}
 	
 	@Bean
-	public FlatFileItemReader<Employee> getFileItemReader(@Value("${input_file}") Resource resource) {
+	public FlatFileItemReader<Employee> getFileItemReader(@Value("${input_file}") final Resource resource) {
 		
 		FlatFileItemReader<Employee> flatFileItemReader = new FlatFileItemReader<>();
 		flatFileItemReader.setResource(resource);

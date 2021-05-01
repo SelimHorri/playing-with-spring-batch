@@ -30,6 +30,10 @@ public class EmployeeService {
 		return this.employeeRepository.findById(id).orElseThrow(() -> new NoSuchElementException("********* NOT FOUND *********"));
 	}
 	
+	public void saveAll(final List<? extends Employee> employees) {
+		this.employeeRepository.saveAll(employees);
+	}
+	
 	public Employee save(final Employee employee) {
 		return this.employeeRepository.save(employee);
 	}
